@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hwoevidence"
+version = "0.1.0"
+description = "Evidence-completeness cross-match of Habitable Worlds Observatory candidate direct-imaging targets against the NASA Exoplanet Archive Mission Star List and the Hipparcos-Gaia Catalog of Accelerations."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Biswajit Jana" }]
+keywords = ["exoplanets", "habitable-worlds-observatory", "astrometry", "astrophysics", "target-selection"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Astronomy",
+]
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "pandas>=2.0",
+  "matplotlib>=3.7",
+  "click>=8.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "pytest-cov>=4.1", "ruff>=0.4"]
+
+[project.scripts]
+hwoevidence = "hwoevidence.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "network: requires internet access to the NASA Exoplanet Archive and VizieR",
+]
+addopts = "-m 'not network'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

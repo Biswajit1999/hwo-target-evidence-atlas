@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "HWO Target Evidence Cross-Match"
+type: software
+authors:
+  - family-names: "Jana"
+    given-names: "Biswajit"
+version: 0.1.0
+date-released: 2026-08-28
+url: "https://github.com/Biswajit1999/hwo-target-evidence-atlas"
+license: MIT
+keywords:
+  - exoplanets
+  - habitable-worlds-observatory
+  - astrometry
+  - target-selection
+references:
+  - type: article
+    authors:
+      - family-names: "Mamajek"
+        given-names: "Eric E."
+      - family-names: "Stapelfeldt"
+        given-names: "Karl R."
+    title: "Setting the Stage for the Search for Life with the Habitable Worlds Observatory: Properties of 164 Promising Planet-survey Targets"
+    journal: "The Astrophysical Journal Supplement Series"
+    volume: 272
+    year: 2024
+  - type: article
+    authors:
+      - family-names: "Brandt"
+        given-names: "Timothy D."
+    title: "The Hipparcos-Gaia Catalog of Accelerations: Gaia EDR3 Edition"
+    journal: "The Astrophysical Journal Supplement Series"
+    volume: 254
+    year: 2021
+  - type: data
+    authors:
+      - name: "NASA Exoplanet Archive"
+    title: "Direct Imaging ExEP Mission Star List (DI_STARS_EXEP)"
+    doi: "10.26133/NEA39"
