@@ -20,9 +20,11 @@ import re
 import time
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET  # type hints only; parsing uses defusedxml below
 from dataclasses import dataclass
 from pathlib import Path
 
+import defusedxml.ElementTree as DefusedET
 import pandas as pd
 
 NEA_TAP_SYNC = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync"
@@ -79,6 +81,13 @@ def load_di_stars_exep(paths: CachePaths, force: bool = False) -> pd.DataFrame:
     records = json.loads(raw)
     df = pd.DataFrame(records)
     df["hip_number"] = df["hip_name"].apply(_extract_hip_number)
+    # hip_name (and hip_number) is not a unique row key: several DI_STARS_EXEP
+    # targets are components of a wide binary sharing one Hipparcos number and
+    # one hip_name string (e.g. HIP 72659 A/B). target_id is a stable,
+    # guaranteed-unique per-row identifier assigned once at load time and
+    # threaded through every downstream table; every later join uses this,
+    # never hip_name, to avoid a many-to-many merge fan-out (see ranking.py).
+    df["target_id"] = df.index.astype(int)
     return df
 
 
@@ -130,19 +139,61 @@ def load_hgca_for_hip(hip_numbers: list[int], paths: CachePaths, force: bool = F
     return pd.DataFrame(rows)
 
 
+def _local_tag(elem: ET.Element) -> str:
+    """Element tag without its XML namespace prefix (VOTable responses use
+    a versioned default namespace, e.g. '{http://www.ivoa.net/xml/VOTable/v1.3}FIELD')."""
+    tag = elem.tag
+    return tag.split("}", 1)[1] if "}" in tag else tag
+
+
 def _parse_hgca_votable_row(xml_text: str, hip: int) -> dict | None:
     """Extract the single data row from a small per-star HGCA VOTABLE
-    response without a full XML/VOTable dependency (only a handful of
-    known, fixed-order numeric columns are needed)."""
-    m = re.search(r"<TR>(.*?)</TR>", xml_text, re.DOTALL)
-    if m is None:
-        return None
-    cells = re.findall(r"<TD>(.*?)</TD>", m.group(1))
-    if len(cells) != len(HGCA_COLUMNS):
-        return None
+    response using real XML parsing (``xml.etree.ElementTree``), not a
+    fixed-column-order regex.
+
+    Column names are read from the response's own ``<FIELD name=...>``
+    elements, in the order VizieR actually returned them, and matched by
+    name against the requested ``HGCA_COLUMNS`` -- so a VizieR-side
+    reordering or the addition/removal of a column does not silently
+    misassign values to the wrong field. Returns ``None`` (with the
+    specific reason distinguishable via the raised exception during
+    development/debugging) only for the expected "no match for this HIP"
+    case of an empty result table; any other structural surprise (a
+    genuinely malformed or unexpectedly-shaped response) raises rather
+    than silently returning a wrong or missing row.
+    """
+    root = DefusedET.fromstring(xml_text)
+    fields = [
+        el.attrib["name"]
+        for el in root.iter()
+        if _local_tag(el) == "FIELD" and "name" in el.attrib
+    ]
+    if not fields:
+        raise ValueError(f"HGCA VOTable response for HIP {hip} has no FIELD definitions")
+
+    trs = [el for el in root.iter() if _local_tag(el) == "TR"]
+    if not trs:
+        return None  # expected case: no HGCA cross-match for this HIP
+
+    tds = [el for el in trs[0] if _local_tag(el) == "TD"]
+    if len(tds) != len(fields):
+        raise ValueError(
+            f"HGCA VOTable response for HIP {hip}: {len(fields)} FIELDs but "
+            f"{len(tds)} TD cells in the data row -- response shape does not "
+            f"match its own schema"
+        )
+
+    raw = {name: (td.text or "").strip() for name, td in zip(fields, tds)}
+    missing = [c for c in HGCA_COLUMNS if c not in raw]
+    if missing:
+        raise ValueError(
+            f"HGCA VOTable response for HIP {hip} is missing expected column(s) "
+            f"{missing} -- upstream schema may have changed (see docs/DATA_SOURCES.md)"
+        )
+
     row = {}
-    for name, val in zip(HGCA_COLUMNS, cells):
-        val = val.strip()
+    for name in HGCA_COLUMNS:
+        val = raw[name]
         if val == "":
             row[name] = None
         elif name in ("HIP", "Gaia"):

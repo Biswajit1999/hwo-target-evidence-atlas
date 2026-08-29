@@ -24,11 +24,55 @@ _DI_STARS_EXCERPT = [
      "st_log_rhk": -4.991, "wds_designation": "08181+2810"},
 ]
 
-# A real per-star VizieR HGCA VOTABLE fragment for HIP 41926 (trimmed to the
-# <TR> row used by _parse_hgca_votable_row).
-_HGCA_VOTABLE_EXCERPT = """<TABLEDATA>
-<TR><TD>41926</TD><TD>5640565607657897728</TD><TD>128.208756</TD><TD>-31.497487</TD><TD>82.2080</TD><TD>0.0178</TD><TD>-1113.739</TD><TD>762.420</TD><TD>0.018</TD><TD>0.028</TD><TD>4.444e-01</TD></TR>
-</TABLEDATA>"""
+# A real VizieR HGCA VOTABLE response for HIP 41926, re-fetched 2026-08-29
+# (per-field <DESCRIPTION>/<LINK> tags trimmed for readability -- the parser
+# doesn't read them -- but the namespace, FIELD name/order, and the TR/TD
+# data row are exactly as returned by the live service).
+_HGCA_VOTABLE_EXCERPT = """<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns="http://www.ivoa.net/xml/VOTable/v1.3">
+<RESOURCE ID="yCat_22540042" name="J/ApJS/254/42" type="results">
+  <TABLE ID="J_ApJS_254_42_catalog" name="J/ApJS/254/42/catalog">
+    <FIELD name="HIP" datatype="int" width="6"/>
+    <FIELD name="Gaia" datatype="long" width="19"/>
+    <FIELD name="RA_ICRS" datatype="double" width="15" precision="11" unit="deg"/>
+    <FIELD name="DE_ICRS" datatype="double" width="15" precision="11" unit="deg"/>
+    <FIELD name="plx" datatype="double" width="8" precision="4" unit="mas"/>
+    <FIELD name="e_plx" datatype="float" width="7" precision="4" unit="mas"/>
+    <FIELD name="pmRA" datatype="double" width="9" precision="3" unit="mas/yr"/>
+    <FIELD name="pmDE" datatype="double" width="9" precision="3" unit="mas/yr"/>
+    <FIELD name="e_pmRA" datatype="float" width="6" precision="3" unit="mas/yr"/>
+    <FIELD name="e_pmDE" datatype="float" width="6" precision="3" unit="mas/yr"/>
+    <FIELD name="chi2" datatype="float" width="10" precision="E3"/>
+<DATA><TABLEDATA>
+<TR><TD>41926</TD><TD>5640565607657897728</TD><TD>128.20875554053</TD><TD>-31.49748704809</TD><TD>82.2080</TD><TD>0.0178</TD><TD>-1113.739</TD><TD>762.420</TD><TD>0.018</TD><TD>0.028</TD><TD>4.444e-01</TD></TR>
+</TABLEDATA></DATA>
+</TABLE>
+<INFO name="matches" value="1">matching records</INFO>
+</RESOURCE>
+</VOTABLE>"""
+
+# A real VizieR "no match" HGCA VOTABLE response (fetched 2026-08-29 for a
+# deliberately out-of-range HIP number): FIELD definitions are present but
+# there is no DATA/TABLEDATA section at all when nothing matches.
+_HGCA_VOTABLE_NO_MATCH = """<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.4" xmlns="http://www.ivoa.net/xml/VOTable/v1.3">
+<RESOURCE ID="yCat_22540042" name="J/ApJS/254/42" type="results">
+  <TABLE ID="J_ApJS_254_42_catalog" name="J/ApJS/254/42/catalog">
+    <FIELD name="HIP" datatype="int" width="6"/>
+    <FIELD name="Gaia" datatype="long" width="19"/>
+    <FIELD name="RA_ICRS" datatype="double" width="15" precision="11" unit="deg"/>
+    <FIELD name="DE_ICRS" datatype="double" width="15" precision="11" unit="deg"/>
+    <FIELD name="plx" datatype="double" width="8" precision="4" unit="mas"/>
+    <FIELD name="e_plx" datatype="float" width="7" precision="4" unit="mas"/>
+    <FIELD name="pmRA" datatype="double" width="9" precision="3" unit="mas/yr"/>
+    <FIELD name="pmDE" datatype="double" width="9" precision="3" unit="mas/yr"/>
+    <FIELD name="e_pmRA" datatype="float" width="6" precision="3" unit="mas/yr"/>
+    <FIELD name="e_pmDE" datatype="float" width="6" precision="3" unit="mas/yr"/>
+    <FIELD name="chi2" datatype="float" width="10" precision="E3"/>
+<!--  EMPTY result, no DATA part  -->
+</TABLE>
+</RESOURCE>
+</VOTABLE>"""
 
 
 def test_extract_hip_number():
@@ -55,7 +99,30 @@ def test_parse_hgca_votable_row_real_fragment():
 
 
 def test_parse_hgca_votable_row_no_match_returns_none():
-    assert _parse_hgca_votable_row("<TABLEDATA></TABLEDATA>", hip=1) is None
+    assert _parse_hgca_votable_row(_HGCA_VOTABLE_NO_MATCH, hip=999999999) is None
+
+
+def test_parse_hgca_votable_row_raises_on_missing_field_definitions():
+    """A response with no FIELD elements at all is a structural surprise,
+    not the expected 'no match' case, and should raise rather than
+    silently return None (see _parse_hgca_votable_row docstring)."""
+    with pytest.raises(ValueError, match="no FIELD definitions"):
+        _parse_hgca_votable_row("<TABLEDATA></TABLEDATA>", hip=1)
+
+
+def test_parse_hgca_votable_row_raises_on_shape_mismatch():
+    """A TR row with a different cell count than the FIELD list is a real
+    schema-mismatch signal and should raise, not silently misassign
+    values to the wrong column names."""
+    malformed = """<?xml version="1.0"?>
+<VOTABLE xmlns="http://www.ivoa.net/xml/VOTable/v1.3">
+<RESOURCE><TABLE>
+<FIELD name="HIP" datatype="int"/>
+<FIELD name="Gaia" datatype="long"/>
+<DATA><TABLEDATA><TR><TD>41926</TD></TR></TABLEDATA></DATA>
+</TABLE></RESOURCE></VOTABLE>"""
+    with pytest.raises(ValueError, match="TD cells"):
+        _parse_hgca_votable_row(malformed, hip=41926)
 
 
 @pytest.mark.network

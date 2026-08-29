@@ -1,12 +1,19 @@
 """Per-star, per-category evidence-completeness matrix.
 
-Six evidence categories are scored for each of the 164
-``DI_STARS_EXEP`` targets. Each category records whether a *measurement
-exists at all* (evidence present) -- not whether the star is favorable. A
-"no known companion" flag and "no measurement attempted" are different
-things and are never conflated here; see the ``EVIDENCE_CATEGORIES``
-docstring for exactly what "present" means for each category, and
-docs/METHODS.md for the rationale.
+Six categories are scored for each of the 164 ``DI_STARS_EXEP`` targets
+(``EVIDENCE_CATEGORIES``), but only four of them -- the ones that record
+whether a real, non-universal measurement exists -- feed into
+``evidence_completeness`` (``COVERAGE_CATEGORIES``). Two categories
+(``archive_planet_flag_populated``, ``archive_disk_flag_populated``) are
+tracked but deliberately excluded: they are true for essentially every row
+in this target list regardless of whether any actual companion or exozodi
+observation was ever made, so including them in a completeness average
+would silently inflate every star's score by a fixed, uninformative
+amount. A "no known companion" flag and "no measurement attempted" are
+different things and are never conflated here; see the
+``EVIDENCE_CATEGORIES`` docstrings for exactly what "present" means for
+each category, and docs/METHODS.md / docs/LIMITATIONS.md for the
+rationale.
 """
 from __future__ import annotations
 
@@ -48,16 +55,24 @@ def _multiplicity_present(row: pd.Series) -> bool:
 
 
 def _rv_companion_present(row: pd.Series) -> bool:
-    # sy_planets_flag is always populated ("Y"/"N") in DI_STARS_EXEP for
-    # this target list, so "evidence present" is true for every row; the
-    # informative quantity is the *value*, tracked separately in
-    # conflicts.py. This category is kept for schema completeness and to
-    # make an actual missing-value future case visible if the upstream
-    # table ever changes.
+    # sy_planets_flag is always populated ("Y"/"N") in DI_STARS_EXEP for this
+    # target list, so this is a field-populated check, not a "companion
+    # search was actually performed" or "observation exists" check -- a
+    # star flagged "N" has not necessarily ever been surveyed for
+    # companions. Deliberately EXCLUDED from evidence_completeness (see
+    # NON_COVERAGE_CATEGORY_KEYS below) so it cannot silently inflate the
+    # completeness score for every star. Kept as its own tracked column
+    # because it would still expose a real gap if the upstream field ever
+    # went unpopulated.
     return pd.notna(row.get("sy_planets_flag"))
 
 
 def _exozodi_present(row: pd.Series) -> bool:
+    # Same caveat as _rv_companion_present: a populated sy_disks_flag means
+    # the archive recorded *some* answer (which may be "no excess
+    # reported"), not that a dedicated exozodiacal-dust observation (e.g.
+    # HOSTS) exists for this star. Excluded from evidence_completeness for
+    # the same reason.
     return pd.notna(row.get("sy_disks_flag"))
 
 
@@ -83,13 +98,15 @@ EVIDENCE_CATEGORIES = [
         _multiplicity_present,
     ),
     EvidenceCategory(
-        "known_companions",
-        "Known-planet flag assessed (sy_planets_flag populated)",
+        "archive_planet_flag_populated",
+        "Known-planet flag field is populated (sy_planets_flag not null) -- "
+        "does NOT mean a companion search was performed; see LIMITATIONS.md",
         _rv_companion_present,
     ),
     EvidenceCategory(
-        "exozodiacal_dust",
-        "Circumstellar-disk flag assessed (sy_disks_flag populated)",
+        "archive_disk_flag_populated",
+        "Circumstellar-disk flag field is populated (sy_disks_flag not null) "
+        "-- does NOT mean a dedicated exozodi observation exists; see LIMITATIONS.md",
         _exozodi_present,
     ),
     EvidenceCategory(
@@ -98,6 +115,13 @@ EVIDENCE_CATEGORIES = [
         _astrometric_accel_present,
     ),
 ]
+
+# Categories that record "does the archive have a populated field" rather
+# than "does a real observation/survey exist for this star" -- excluded from
+# evidence_completeness so a universally-populated metadata field cannot
+# silently inflate every star's score. See docs/LIMITATIONS.md.
+NON_COVERAGE_CATEGORY_KEYS = {"archive_planet_flag_populated", "archive_disk_flag_populated"}
+COVERAGE_CATEGORIES = [c for c in EVIDENCE_CATEGORIES if c.key not in NON_COVERAGE_CATEGORY_KEYS]
 
 
 def build_evidence_matrix(stars: pd.DataFrame, hgca: pd.DataFrame) -> pd.DataFrame:
@@ -126,13 +150,44 @@ def build_evidence_matrix(stars: pd.DataFrame, hgca: pd.DataFrame) -> pd.DataFra
         lambda c: float(chi2_dist.sf(c, df=2)) if pd.notna(c) else np.nan
     )
     merged["hgca_significant_accel"] = merged["hgca_accel_pvalue"] < ACCEL_SIGNIFICANCE_ALPHA
+    merged["hgca_accel_qvalue"] = _benjamini_hochberg_qvalues(merged["hgca_accel_pvalue"])
+    merged["hgca_significant_accel_fdr"] = merged["hgca_accel_qvalue"] < ACCEL_SIGNIFICANCE_ALPHA
 
     for cat in EVIDENCE_CATEGORIES:
         merged[cat.key] = merged.apply(cat.present_fn, axis=1)
 
-    cat_cols = [c.key for c in EVIDENCE_CATEGORIES]
-    merged["evidence_completeness"] = merged[cat_cols].mean(axis=1)
+    # evidence_completeness deliberately averages only COVERAGE_CATEGORIES,
+    # not all of EVIDENCE_CATEGORIES: the excluded categories record a
+    # universally-populated archive field, not real observational coverage
+    # (see NON_COVERAGE_CATEGORY_KEYS above) and would otherwise silently
+    # inflate every star's score by a fixed amount.
+    all_cat_cols = [c.key for c in EVIDENCE_CATEGORIES]
+    coverage_cat_cols = [c.key for c in COVERAGE_CATEGORIES]
+    merged["evidence_completeness"] = merged[coverage_cat_cols].mean(axis=1)
 
-    id_cols = ["hip_name", "hd_name", "hip_number", "sy_dist", "sy_planets_flag", "sy_disks_flag"]
-    return merged[id_cols + cat_cols + ["evidence_completeness", "hgca_chi2",
-                                         "hgca_accel_pvalue", "hgca_significant_accel"]]
+    id_cols = ["target_id", "hip_name", "hd_name", "hip_number", "sy_dist",
+               "sy_planets_flag", "sy_disks_flag"]
+    return merged[id_cols + all_cat_cols + [
+        "evidence_completeness", "hgca_chi2", "hgca_accel_pvalue",
+        "hgca_significant_accel", "hgca_accel_qvalue", "hgca_significant_accel_fdr",
+    ]]
+
+
+def _benjamini_hochberg_qvalues(pvalues: pd.Series) -> pd.Series:
+    """Benjamini-Hochberg FDR-adjusted q-values, computed only over the
+    non-null p-values (stars with an HGCA cross-match); null entries stay
+    null. Standard step-up procedure (Benjamini & Hochberg 1995); no new
+    dependency needed for a ~10-line, well-known algorithm."""
+    valid = pvalues.dropna()
+    if valid.empty:
+        return pd.Series(np.nan, index=pvalues.index)
+    n = len(valid)
+    order = valid.sort_values().index
+    ranks = np.arange(1, n + 1)
+    raw_q = valid.loc[order].to_numpy() * n / ranks
+    # enforce monotonicity (step-up): q-value can only increase as rank decreases
+    q_monotone = np.minimum.accumulate(raw_q[::-1])[::-1]
+    q_monotone = np.clip(q_monotone, 0.0, 1.0)
+    qvalues = pd.Series(np.nan, index=pvalues.index)
+    qvalues.loc[order] = q_monotone
+    return qvalues

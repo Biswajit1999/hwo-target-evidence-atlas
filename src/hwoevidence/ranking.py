@@ -29,12 +29,24 @@ def rank_by_evidence_completeness(evidence: pd.DataFrame) -> pd.DataFrame:
 def combined_view(stars: pd.DataFrame, evidence: pd.DataFrame) -> pd.DataFrame:
     """Both rankings side by side, still as two separate columns -- never a
     merged score. Useful for spotting the "high value, low evidence"
-    quadrant that most needs new observations before HWO launch."""
-    merged = stars[["hip_name", "hd_name", "sy_dist"]].merge(
-        evidence[["hip_name", "evidence_completeness"]], on="hip_name", how="left"
+    quadrant that most needs new observations before HWO launch.
+
+    Merges on ``target_id``, never ``hip_name``/``hip_number``: several
+    targets are components of a wide binary sharing one Hipparcos number
+    and hip_name string (e.g. HIP 72659 A/B), so a merge keyed on hip_name
+    would match every A-row against every B-row sharing that name and
+    silently fan out the result (164 stars -> 174 rows in an earlier
+    version of this function; see
+    tests/test_ranking.py::test_combined_view_does_not_fan_out_on_shared_hip_name).
+    """
+    merged = stars[["target_id", "hip_name", "hd_name", "sy_dist"]].merge(
+        evidence[["target_id", "evidence_completeness"]], on="target_id", how="left"
     )
-    merged["science_value_rank"] = merged["sy_dist"].rank(method="min").astype(int)
+    assert len(merged) == len(stars), (
+        f"combined_view merge changed row count: {len(stars)} -> {len(merged)}"
+    )
+    merged["distance_rank"] = merged["sy_dist"].rank(method="min").astype(int)
     merged["evidence_completeness_rank"] = (
         merged["evidence_completeness"].rank(method="min", ascending=False).astype(int)
     )
-    return merged.sort_values("science_value_rank").reset_index(drop=True)
+    return merged.sort_values("distance_rank").reset_index(drop=True)

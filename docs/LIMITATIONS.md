@@ -19,19 +19,29 @@
   unresolved companion; this is stated explicitly wherever the category is
   used, not just here.
 
-## Exozodiacal dust proxy
+## Archive field-populated categories are not observational coverage
 
-- The `exozodiacal_dust` category uses the archive's `sy_disks_flag`,
-  which is populated for all 164 targets (100% "evidence present" by this
-  project's definition) but conflates several different underlying
-  situations: a dedicated interferometric null (e.g. from the HOSTS
-  survey, which has directly observed only ~23 of the 164 targets), an
-  infrared-excess-based disk detection/non-detection, or simply an
-  absence of any reported excess in whatever compilation the archive used.
-  A 100%-complete flag column is not the same claim as "164/164 targets
-  have a dedicated exozodi observation" -- the latter is false (only ~23
-  do, per the HOSTS survey found during research). Do not read this
-  project's 100% exozodi-evidence number as survey coverage.
+- `archive_planet_flag_populated` (the archive's `sy_planets_flag`) and
+  `archive_disk_flag_populated` (`sy_disks_flag`) are both populated for
+  essentially all 164 targets, but a populated field only means the
+  archive recorded *some* answer -- it does not mean any actual companion
+  search or exozodi observation was performed. For the disk flag
+  specifically: it conflates a dedicated interferometric null (e.g. from
+  the HOSTS survey, which has directly observed only ~23 of the 164
+  targets), an infrared-excess-based disk detection/non-detection, or
+  simply an absence of any reported excess in whatever compilation the
+  archive used. **Both categories are deliberately excluded from
+  `evidence_completeness`** (see `NON_COVERAGE_CATEGORY_KEYS` in
+  `src/hwoevidence/evidence.py`) for exactly this reason: including a
+  field that is essentially always populated regardless of real survey
+  coverage would silently inflate every star's completeness score by a
+  fixed, uninformative amount. They are still reported as their own
+  columns (so a real future gap in either field would still be visible),
+  just never averaged into the headline completeness number. Do not read
+  either category's near-100% populated rate as "100% of targets have a
+  dedicated companion or exozodi observation" -- neither claim is true
+  (e.g. only ~23/164 have a dedicated HOSTS exozodi observation, per the
+  HOSTS survey found during research).
 
 ## Astrometric acceleration
 
@@ -41,14 +51,23 @@
   stars, not investigated further in this version.
 - A significant HGCA acceleration (`docs/METHODS.md`) is evidence of *some*
   unmodeled companion, not a detection of a specific companion's mass,
-  period, or nature. The 31 flagged "undisclosed companion" conflicts
-  (`results/conflicts.csv`) are candidates for follow-up, not confirmed
-  discoveries -- and this project makes no claim to have discovered
-  anything.
+  period, or nature. `sy_planets_flag == "N"` means no archive-listed
+  planet, not a confirmed single-star determination -- so the 31 stars in
+  `results/hgca_accelerators_without_listed_planets.csv` are **not**
+  established catalog conflicts, just candidates for follow-up. This
+  project makes no claim to have discovered anything, and does not assert
+  the two catalogs disagree.
 - The chi-squared significance threshold (p < 0.01, `ACCEL_SIGNIFICANCE_ALPHA`
   in `src/hwoevidence/evidence.py`) is a documented, arbitrary choice, not
   a value derived from or validated against this specific target
-  population's false-positive characteristics.
+  population's false-positive characteristics. Because this threshold is
+  applied independently across 164 stars, a Benjamini-Hochberg FDR
+  correction is also computed and reported (`hgca_accel_qvalue`,
+  `hgca_significant_accel_fdr`): 40 stars are significant at raw p < 0.01,
+  but only 35 survive FDR correction at the same nominal rate, and the
+  "31 accelerators without a listed planet" headline count drops to 28
+  under FDR correction -- report the FDR-corrected numbers when the
+  multiple-comparisons context matters.
 
 ## What is not yet integrated
 

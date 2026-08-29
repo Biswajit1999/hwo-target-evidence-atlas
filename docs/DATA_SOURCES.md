@@ -27,7 +27,11 @@
 
 - **Provider**: VizieR (Centre de Données astronomiques de Strasbourg),
   catalog `J/ApJS/254/42`.
-- **URL**: `https://vizier.cds.unistra.fr/viz-bin/votable?-source=J/ApJS/254/42&...` (one query per Hipparcos number; see `src/hwoevidence/data.py`).
+- **URL**: `https://vizier.cds.unistra.fr/viz-bin/votable?-source=J/ApJS/254/42&-out.max=5&-out=HIP,Gaia,RA_ICRS,DE_ICRS,plx,e_plx,pmRA,pmDE,e_pmRA,e_pmDE,chi2&HIP=<hip_number>`
+  (one query per Hipparcos number, `<hip_number>` substituted per star; see
+  `VIZIER_HGCA_URL`/`HGCA_CATALOG`/`HGCA_COLUMNS` in `src/hwoevidence/data.py`
+  for the exact, runnable construction -- e.g. for HIP 72659:
+  <https://vizier.cds.unistra.fr/viz-bin/votable?-source=J/ApJS/254/42&-out.max=5&-out=HIP,Gaia,RA_ICRS,DE_ICRS,plx,e_plx,pmRA,pmDE,e_pmRA,e_pmDE,chi2&HIP=72659>).
 - **Underlying publication**: Brandt, T. D. (2021), "The Hipparcos-Gaia
   Catalog of Accelerations: Gaia EDR3 Edition," ApJS 254, 42.
 - **Accessed**: 2026-08-28. 160/164 (later 156/159 unique Hipparcos numbers

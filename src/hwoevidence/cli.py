@@ -5,9 +5,9 @@ from pathlib import Path
 
 import click
 
-from .conflicts import find_undisclosed_companion_conflicts
+from .conflicts import find_hgca_accelerators_without_archive_listed_planets
 from .data import CachePaths, load_di_stars_exep, load_hgca_for_hip
-from .evidence import build_evidence_matrix
+from .evidence import COVERAGE_CATEGORIES, build_evidence_matrix
 from .ranking import combined_view
 
 
@@ -40,20 +40,33 @@ def build_cmd(cache_dir: str, out_dir: str, force_refetch: bool) -> None:
     evidence = build_evidence_matrix(stars, hgca)
     evidence.to_csv(out / "evidence_matrix.csv", index=False)
     click.echo(f"Wrote {out/'evidence_matrix.csv'} ({len(evidence)} rows)")
+    assert len(evidence) == len(stars), (
+        f"evidence_matrix row count ({len(evidence)}) != star count ({len(stars)})"
+    )
 
-    conflicts = find_undisclosed_companion_conflicts(evidence)
-    conflicts.to_csv(out / "conflicts.csv", index=False)
-    click.echo(f"Wrote {out/'conflicts.csv'} ({len(conflicts)} candidate conflicts)")
+    conflicts = find_hgca_accelerators_without_archive_listed_planets(evidence)
+    conflicts.to_csv(out / "hgca_accelerators_without_listed_planets.csv", index=False)
+    click.echo(
+        f"Wrote {out/'hgca_accelerators_without_listed_planets.csv'} "
+        f"({len(conflicts)} HGCA accelerators lacking an archive-listed planet; "
+        f"companion nature undetermined)"
+    )
 
     ranking = combined_view(stars, evidence)
     ranking.to_csv(out / "ranking.csv", index=False)
-    click.echo(f"Wrote {out/'ranking.csv'}")
+    click.echo(f"Wrote {out/'ranking.csv'} ({len(ranking)} rows)")
+    assert len(ranking) == len(stars), (
+        f"ranking row count ({len(ranking)}) != star count ({len(stars)})"
+    )
 
-    summary = evidence[[c for c in evidence.columns if c not in
-                         ("hip_name", "hd_name", "hip_number")]].select_dtypes(include="bool").mean()
-    click.echo("\nPer-category evidence completeness (fraction of 164 targets):")
+    coverage_cols = [c.key for c in COVERAGE_CATEGORIES]
+    summary = evidence[coverage_cols].mean()
+    click.echo(f"\nPer-category observational coverage (fraction of {len(stars)} targets, "
+               f"coverage categories only -- see docs/LIMITATIONS.md):")
     for k, v in summary.items():
         click.echo(f"  {k}: {v:.1%}")
+    click.echo(f"\nOverall evidence_completeness (mean of coverage categories): "
+               f"{evidence['evidence_completeness'].mean():.1%}")
 
 
 if __name__ == "__main__":
