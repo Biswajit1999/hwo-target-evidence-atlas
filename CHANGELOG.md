@@ -3,6 +3,14 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-09-01
+
+- Reframe the display title as a candidate-target catalog cross-match.
+- Add a reproducible per-category coverage table with Wilson 95% intervals.
+- State explicitly that 90.9% is catalog-field availability, not mission
+  readiness, official target completeness, or imaging detectability.
+- Eliminate a pandas nullable-boolean conversion warning.
+
 ## [0.2.0] - 2026-08-29
 
 An external review (Codex) of this repository found one critical bug and

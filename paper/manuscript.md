@@ -1,4 +1,4 @@
-# HWO Target Evidence Cross-Match: Methods and Results (v0.2.0)
+# HWO Candidate-Target Catalog Cross-Match: Methods and Results (v0.3.0)
 
 **Author**: Biswajit Jana
 
@@ -15,10 +15,13 @@ entry). Two further archive fields (known-planet flag, circumstellar-disk
 flag populated) are tracked separately and deliberately excluded from the
 completeness score, since they are populated for essentially every target
 in this list regardless of whether any real companion or exozodi
-observation was performed. Coverage is essentially complete for stellar
-parameters (100%) and activity (99.4%), high for astrometric acceleration
-(97.6%), and markedly incomplete for multiplicity (66.5%); mean
-`evidence_completeness` across the four coverage categories is 90.9%.
+observation was performed. Catalog-field availability is 164/164 for stellar
+parameters (Wilson 95% CI 97.7%-100%), 163/164 for activity (96.6%-99.9%),
+160/164 for astrometric acceleration (93.9%-99.0%), and 109/164 for
+multiplicity (58.9%-73.2%); mean `evidence_completeness` across the four
+coverage categories is 90.9%. This average is a catalog-field availability
+summary, not HWO target-list completeness, mission readiness, or
+direct-imaging detectability.
 Cross-matching the two catalogs surfaces 31 targets (28 after
 Benjamini-Hochberg false-discovery-rate correction across all 164
 comparisons) with a statistically significant astrometric acceleration

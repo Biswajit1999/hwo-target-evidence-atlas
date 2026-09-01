@@ -4,16 +4,18 @@ from __future__ import annotations
 from pathlib import Path
 
 import click
+import pandas as pd
 
 from .conflicts import find_hgca_accelerators_without_archive_listed_planets
 from .data import CachePaths, load_di_stars_exep, load_hgca_for_hip
 from .evidence import COVERAGE_CATEGORIES, build_evidence_matrix
 from .ranking import combined_view
+from .summary import coverage_summary
 
 
 @click.group()
 def main() -> None:
-    """hwoevidence: HWO target evidence-completeness cross-match."""
+    """hwoevidence: candidate-target catalog-field cross-match."""
 
 
 @main.command("build")
@@ -39,6 +41,7 @@ def build_cmd(cache_dir: str, out_dir: str, force_refetch: bool) -> None:
 
     evidence = build_evidence_matrix(stars, hgca)
     evidence.to_csv(out / "evidence_matrix.csv", index=False)
+    coverage_summary(evidence).to_csv(out / "coverage_summary.csv", index=False)
     click.echo(f"Wrote {out/'evidence_matrix.csv'} ({len(evidence)} rows)")
     assert len(evidence) == len(stars), (
         f"evidence_matrix row count ({len(evidence)}) != star count ({len(stars)})"
@@ -67,6 +70,19 @@ def build_cmd(cache_dir: str, out_dir: str, force_refetch: bool) -> None:
         click.echo(f"  {k}: {v:.1%}")
     click.echo(f"\nOverall evidence_completeness (mean of coverage categories): "
                f"{evidence['evidence_completeness'].mean():.1%}")
+
+
+@main.command("summarize")
+@click.option("--evidence-csv", default="results/evidence_matrix.csv", show_default=True,
+              type=click.Path(exists=True))
+@click.option("--out", "out_path", default="results/coverage_summary.csv", show_default=True)
+def summarize_cmd(evidence_csv: str, out_path: str) -> None:
+    """Recompute interval-bearing coverage statistics from a committed matrix."""
+    summary = coverage_summary(pd.read_csv(evidence_csv))
+    destination = Path(out_path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    summary.to_csv(destination, index=False)
+    click.echo(f"Wrote {destination} ({len(summary)} categories)")
 
 
 if __name__ == "__main__":

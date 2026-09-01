@@ -11,9 +11,10 @@
   272, 32. Archive DOI: 10.26133/NEA39.
 - **Accessed**: 2026-08-28. Row count confirmed 164 (matches the paper's
   target-list size exactly; see `docs/VALIDATION.md`).
-- **Licence**: NASA Exoplanet Archive data are public domain (U.S.
-  Government work); the archive requests citation of the underlying
-  publication, included above and in `CITATION.cff`.
+- **Reuse and acknowledgement**: this project does not assume that every
+  compiled value inherits a blanket public-domain status. It cites the NASA
+  Exoplanet Archive and the underlying publication and redistributes only the
+  derived, attributed cross-match needed to audit these results.
 - **Fields used**: stellar identifiers (HIP/HD/TIC), coordinates, distance,
   stellar parameters (Teff, mass, radius, logg, metallicity) with
   per-field reference links, chromospheric activity index (log R'HK),

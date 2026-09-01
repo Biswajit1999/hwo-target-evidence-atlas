@@ -32,7 +32,7 @@ def find_hgca_accelerators_without_archive_listed_planets(evidence: pd.DataFrame
     follow-up, not confirmed conflicts.
     """
     mask = (
-        evidence["hgca_significant_accel"].fillna(False)
+        evidence["hgca_significant_accel"].astype("boolean").fillna(False).astype(bool)
         & (evidence["sy_planets_flag"] == "N")
     )
     cols = ["target_id", "hip_name", "hd_name", "sy_planets_flag", "hgca_chi2",

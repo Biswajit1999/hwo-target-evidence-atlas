@@ -1,4 +1,4 @@
-# HWO Target Evidence Cross-Match
+# HWO Candidate-Target Catalog Cross-Match
 
 [![CI](https://github.com/Biswajit1999/hwo-target-evidence-atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/Biswajit1999/hwo-target-evidence-atlas/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -36,7 +36,7 @@ python scripts/make_figures.py              # regenerate results/figures/
 
 See `docs/REPRODUCIBILITY.md` for full detail.
 
-## Result
+## Catalog-field coverage result
 
 ![Evidence completeness by category](results/figures/evidence_completeness.png)
 
@@ -49,7 +49,10 @@ chromospheric activity, 97.6% for HGCA astrometric-acceleration entries,
 and only 66.5% for multiplicity (a Washington Double Star catalog
 cross-match) -- the clearest, most actionable gap in this list. Mean
 `evidence_completeness` across these four real coverage categories is
-90.9%. (The known-planet-flag and circumstellar-disk-flag archive fields
+90.9%. This measures metadata availability in this 164-row catalog, not HWO
+target completeness, observing readiness, or direct-imaging detectability.
+Wilson intervals for the four field-coverage fractions are written to
+`results/coverage_summary.csv`. (The known-planet-flag and circumstellar-disk-flag archive fields
 are separately 100% populated for every target -- shown in gray in the
 figure -- but this reflects the archive's bookkeeping, not real companion
 or exozodi surveys; see `docs/LIMITATIONS.md`.)

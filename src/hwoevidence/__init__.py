@@ -21,4 +21,4 @@ are kept as separate, never-merged outputs, and for exactly what each
 evidence category does and does not establish.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
