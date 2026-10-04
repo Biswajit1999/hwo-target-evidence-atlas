@@ -1,0 +1,5 @@
+stellar_parameters,activity,multiplicity,astrometric_acceleration,n_targets,fraction_targets,n_categories_present
+True,True,True,True,104,0.6341463414634146,4
+True,True,False,True,55,0.3353658536585366,3
+True,True,True,False,4,0.024390243902439025,3
+True,False,True,True,1,0.006097560975609756,3

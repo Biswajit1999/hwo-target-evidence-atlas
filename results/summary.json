@@ -1,0 +1,11 @@
+{
+  "n_targets": 164,
+  "n_hgca_tests": 160,
+  "fdr_family": "non-null HGCA cross-matches",
+  "alpha": 0.01,
+  "n_raw_significant": 40,
+  "n_fdr_significant": 35,
+  "n_raw_significant_without_archive_planet": 31,
+  "n_fdr_significant_without_archive_planet": 28,
+  "mean_category_coverage": 0.9085365853658537
+}

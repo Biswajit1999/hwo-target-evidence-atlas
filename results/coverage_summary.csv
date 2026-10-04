@@ -1,0 +1,5 @@
+category,description,n_present,n_total,fraction_present
+stellar_parameters,"Teff, mass, radius, and logg all measured (NASA Exoplanet Archive)",164,164,1.0
+activity,Chromospheric activity index log(R'HK) measured,163,164,0.9939024390243902
+multiplicity,"Washington Double Star catalog cross-match exists (presence of a record, not a Y/N single-star determination)",109,164,0.6646341463414634
+astrometric_acceleration,Star has a Hipparcos-Gaia Catalog of Accelerations (HGCA) entry,160,164,0.975609756097561

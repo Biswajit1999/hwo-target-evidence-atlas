@@ -1,58 +1,120 @@
-"""Regenerate results/figures/ from the committed results/*.csv -- never
-hand-edited. Run after ``hwoevidence build`` writes new results.
-"""
+"""Regenerate publication figures from committed tabular results."""
 from __future__ import annotations
 
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 RESULTS_DIR = Path("results")
 FIGURES_DIR = RESULTS_DIR / "figures"
+NAVY = "#1e3a5f"
+BLUE = "#2563a6"
+GOLD = "#b45309"
+INK = "#172033"
 
-COVERAGE_KEYS = ["stellar_parameters", "activity", "multiplicity", "astrometric_acceleration"]
-NON_COVERAGE_KEYS = ["archive_planet_flag_populated", "archive_disk_flag_populated"]
-LABELS = {
-    "stellar_parameters": "stellar parameters",
-    "activity": "chromospheric activity",
-    "multiplicity": "multiplicity (WDS)",
-    "astrometric_acceleration": "HGCA acceleration",
-    "archive_planet_flag_populated": "planet-flag field\npopulated (not coverage)",
-    "archive_disk_flag_populated": "disk-flag field\npopulated (not coverage)",
-}
+
+def _style() -> None:
+    plt.rcParams.update({
+        "font.family": "DejaVu Sans", "axes.spines.top": False,
+        "axes.spines.right": False, "axes.labelcolor": INK, "text.color": INK,
+        "xtick.color": INK, "ytick.color": INK, "figure.facecolor": "white",
+        "axes.facecolor": "white",
+    })
+
+
+def coverage_figure() -> None:
+    summary = pd.read_csv(RESULTS_DIR / "coverage_summary.csv")
+    labels = ["Stellar\nparameters", "Activity\nlog R′HK", "Multiplicity\nWDS record", "HGCA\nentry"]
+    values = summary["fraction_present"].to_numpy()
+    counts = summary["n_present"].astype(int).to_numpy()
+    total = int(summary["n_total"].iloc[0])
+    fig, ax = plt.subplots(figsize=(8.6, 4.6))
+    bars = ax.bar(labels, values, color=[NAVY, NAVY, GOLD, BLUE], width=0.62)
+    for bar, value, count in zip(bars, values, counts):
+        ax.text(bar.get_x() + bar.get_width() / 2, value + 0.018,
+                f"{count}/{total}\n{value:.1%}", ha="center", va="bottom", fontsize=9)
+    ax.set_ylim(0, 1.13)
+    ax.set_ylabel("Fraction of targets with catalogue evidence")
+    ax.set_title("Observational-evidence coverage across 164 HWO candidate stars", loc="left", weight="bold")
+    ax.text(0, -0.23, "WDS absence is not evidence that a star is single; coverage records catalogue presence only.",
+            transform=ax.transAxes, fontsize=8.5, color="#475569")
+    fig.tight_layout()
+    fig.savefig(FIGURES_DIR / "coverage_by_category.png", dpi=220, bbox_inches="tight")
+    plt.close(fig)
+
+
+def structure_figure() -> None:
+    strata = pd.read_csv(RESULTS_DIR / "distance_strata.csv").iloc[:3]
+    patterns = pd.read_csv(RESULTS_DIR / "missingness_patterns.csv")
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.2, 4.8), gridspec_kw={"width_ratios": [1.25, 1]})
+    keys = ["stellar_parameters_fraction", "activity_fraction", "multiplicity_fraction", "astrometric_acceleration_fraction"]
+    labels = ["Stellar parameters", "Activity", "WDS record", "HGCA entry"]
+    colors = [NAVY, "#4f6f91", GOLD, BLUE]
+    x = np.arange(len(strata))
+    width = 0.19
+    for offset, (key, label, color) in enumerate(zip(keys, labels, colors)):
+        ax1.bar(x + (offset - 1.5) * width, strata[key], width, label=label, color=color)
+    ax1.set_xticks(x, [f"{label}\n(n={n})" for label, n in zip(strata["distance_stratum"], strata["n_targets"])])
+    ax1.set_ylim(0, 1.08)
+    ax1.set_ylabel("Coverage fraction")
+    ax1.set_title("Coverage within cumulative distance cuts", loc="left", weight="bold")
+    ax1.legend(frameon=False, fontsize=8, ncol=2, loc="lower left")
+
+    pattern_labels = []
+    for _, row in patterns.iterrows():
+        missing = []
+        if not row["activity"]:
+            missing.append("activity")
+        if not row["multiplicity"]:
+            missing.append("WDS")
+        if not row["astrometric_acceleration"]:
+            missing.append("HGCA")
+        pattern_labels.append("Complete" if not missing else "Missing " + " + ".join(missing))
+    y = np.arange(len(patterns))
+    ax2.barh(y, patterns["n_targets"], color=[NAVY] + [GOLD] * (len(patterns) - 1))
+    ax2.set_yticks(y, pattern_labels)
+    ax2.invert_yaxis()
+    ax2.set_xlabel("Number of targets")
+    ax2.set_title("Exact missingness patterns", loc="left", weight="bold")
+    for index, count in enumerate(patterns["n_targets"]):
+        ax2.text(count + 1, index, str(int(count)), va="center", fontsize=9)
+    fig.tight_layout()
+    fig.savefig(FIGURES_DIR / "coverage_structure.png", dpi=220, bbox_inches="tight")
+    plt.close(fig)
+
+
+def acceleration_figure() -> None:
+    evidence = pd.read_csv(RESULTS_DIR / "evidence_matrix.csv")
+    matched = evidence[evidence["hgca_accel_pvalue"].notna()].sort_values("hgca_accel_pvalue")
+    x = np.arange(1, len(matched) + 1)
+    # Extremely large catalogue chi-squared values underflow the survival
+    # function to exactly zero. Cap only the display at 20 dex; the CSV
+    # retains the unmodified p-values and chi-squared statistics.
+    y = np.minimum(-np.log10(np.clip(matched["hgca_accel_pvalue"].to_numpy(), 1e-300, 1)), 20)
+    colors = np.where(matched["sy_planets_flag"].eq("N"), GOLD, BLUE)
+    fig, ax = plt.subplots(figsize=(9.2, 4.8))
+    ax.scatter(x, y, c=colors, s=22, alpha=0.82, edgecolors="none")
+    ax.axhline(2, color=NAVY, linestyle="--", linewidth=1.2, label="raw p = 0.01")
+    ax.set_xlabel("HGCA-matched targets, ordered by p-value")
+    ax.set_ylabel("−log₁₀(p), capped at 20 for display")
+    ax.set_title("Astrometric acceleration is a follow-up signal, not a companion classification", loc="left", weight="bold")
+    ax.legend(frameon=False)
+    ax.text(0, -0.22, "Gold: no planet listed in the archive. Blue: ≥1 archive-listed planet. Colour does not identify the acceleration source.",
+            transform=ax.transAxes, fontsize=8.5, color="#475569")
+    fig.tight_layout()
+    fig.savefig(FIGURES_DIR / "hgca_acceleration_evidence.png", dpi=220, bbox_inches="tight")
+    plt.close(fig)
 
 
 def main() -> None:
-    evidence = pd.read_csv(RESULTS_DIR / "evidence_matrix.csv")
-    n = len(evidence)
-
-    coverage_frac = [evidence[k].mean() for k in COVERAGE_KEYS]
-    non_coverage_frac = [evidence[k].mean() for k in NON_COVERAGE_KEYS]
-
-    fig, ax = plt.subplots(figsize=(8, 4.5))
-    all_keys = COVERAGE_KEYS + NON_COVERAGE_KEYS
-    all_frac = coverage_frac + non_coverage_frac
-    colors = ["#2a6f97"] * len(COVERAGE_KEYS) + ["#b0b0b0"] * len(NON_COVERAGE_KEYS)
-    bars = ax.bar([LABELS[k] for k in all_keys], all_frac, color=colors)
-    ax.axhline(evidence["evidence_completeness"].mean(), color="#d64550", linestyle="--",
-               linewidth=1, label=f"mean evidence_completeness ({evidence['evidence_completeness'].mean():.1%}, "
-                                    f"coverage categories only)")
-    for bar, frac in zip(bars, all_frac):
-        ax.text(bar.get_x() + bar.get_width() / 2, frac + 0.02, f"{frac:.1%}",
-                ha="center", fontsize=9)
-    ax.set_ylim(0, 1.15)
-    ax.set_ylabel(f"Fraction of {n} targets")
-    ax.set_title("Per-category evidence: blue = real observational coverage,\n"
-                  "gray = archive field populated (excluded from evidence_completeness)")
-    ax.legend(loc="lower left", fontsize=8)
-    plt.xticks(rotation=15, ha="right", fontsize=8)
-    plt.tight_layout()
-
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
-    out = FIGURES_DIR / "evidence_completeness.png"
-    fig.savefig(out, dpi=150)
-    print(f"Wrote {out}")
+    _style()
+    coverage_figure()
+    structure_figure()
+    acceleration_figure()
+    print(f"Wrote three figures to {FIGURES_DIR}")
 
 
 if __name__ == "__main__":
