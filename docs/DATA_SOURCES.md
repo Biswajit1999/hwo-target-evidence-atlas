@@ -9,7 +9,7 @@
   "Setting the Stage for the Search for Life with the Habitable Worlds
   Observatory: Properties of 164 Promising Planet-survey Targets," ApJS
   272, 32. Archive DOI: 10.26133/NEA39.
-- **Accessed**: 2026-08-28. Row count confirmed 164 (matches the paper's
+- **Accessed**: 2026-10-04. Row count confirmed 164 (matches the paper's
   target-list size exactly; see `docs/VALIDATION.md`).
 - **Licence**: NASA Exoplanet Archive data are public domain (U.S.
   Government work); the archive requests citation of the underlying
@@ -34,7 +34,7 @@
   <https://vizier.cds.unistra.fr/viz-bin/votable?-source=J/ApJS/254/42&-out.max=5&-out=HIP,Gaia,RA_ICRS,DE_ICRS,plx,e_plx,pmRA,pmDE,e_pmRA,e_pmDE,chi2&HIP=72659>).
 - **Underlying publication**: Brandt, T. D. (2021), "The Hipparcos-Gaia
   Catalog of Accelerations: Gaia EDR3 Edition," ApJS 254, 42.
-- **Accessed**: 2026-08-28. 160/164 (later 156/159 unique Hipparcos numbers
+- **Accessed**: 2026-10-04. 160/164 (156/159 unique Hipparcos numbers
   after deduplicating shared-HIP binary components; see
   `docs/VALIDATION.md`) targets successfully cross-matched.
 - **Licence**: VizieR/CDS data are freely usable for research with
@@ -71,6 +71,8 @@ extensions rather than silently omitted:
   current binary Y/N flag; not yet integrated (tracked as a repository
   issue).
 
-No data in this repository is redistributed in raw form beyond small,
-explicitly licenced test fixtures (`tests/test_data_adapter.py`); the live
-adapters fetch directly from the sources above at run time.
+The v0.3 release also preserves the exact 2026-10-04 source snapshots in
+`data/cache/`, together with SHA-256 digests and request provenance in
+`data/cache/manifest.json`. The adapters can still refresh both public
+sources directly; the committed snapshot makes the published tables
+reconstructible if an upstream catalogue later changes.

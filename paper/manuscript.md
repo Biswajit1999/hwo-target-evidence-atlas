@@ -1,4 +1,4 @@
-# HWO Target Evidence Cross-Match: Methods and Results (v0.2.0)
+# HWO Target Evidence Cross-Match: Methods and Results (v0.3.0)
 
 **Author**: Biswajit Jana
 
@@ -20,8 +20,8 @@ parameters (100%) and activity (99.4%), high for astrometric acceleration
 (97.6%), and markedly incomplete for multiplicity (66.5%); mean
 `evidence_completeness` across the four coverage categories is 90.9%.
 Cross-matching the two catalogs surfaces 31 targets (28 after
-Benjamini-Hochberg false-discovery-rate correction across all 164
-comparisons) with a statistically significant astrometric acceleration
+Benjamini-Hochberg false-discovery-rate correction across the 160 non-null
+HGCA tests) with a statistically significant astrometric acceleration
 (p < 0.01, 2 degrees of freedom) but no archive-listed planet -- candidates
 for follow-up characterization, not a confirmed catalog conflict or
 detection, since an archive-listed-planet flag of "N" does not establish
@@ -86,7 +86,7 @@ observational coverage and feed into `evidence_completeness` -- mean
 
 **HGCA accelerators without an archive-listed planet**: 31/164 targets
 (18.9%) at raw p < 0.01, or 28/164 (17.1%) after Benjamini-Hochberg FDR
-correction across all 164 comparisons
+correction across the 160 non-null HGCA tests
 (`results/hgca_accelerators_without_listed_planets.csv`). This is not a
 confirmed catalog conflict -- `sy_planets_flag == "N"` means no
 archive-listed planet, not a confirmed single star. Of the 160 targets with an

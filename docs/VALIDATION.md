@@ -1,6 +1,6 @@
 # Validation
 
-| Check | Method | Test / evidence | Result (2026-08-29) |
+| Check | Method | Test / evidence | Result (2026-10-04) |
 |---|---|---|---|
 | `DI_STARS_EXEP` row count matches the published target-list size | Live query against the NASA Exoplanet Archive | `tests/test_data_adapter.py::test_live_di_stars_exep_has_164_rows` | 164 rows, matches Mamajek & Stapelfeldt (2024) exactly |
 | Known real system sanity check | HD 75732 A (55 Cancri, a well-known multi-planet system) has `sy_planets_flag == "Y"` | `tests/test_data_adapter.py::test_di_stars_excerpt_has_expected_real_values` | Pass |
@@ -13,6 +13,9 @@
 | Archive field-populated categories excluded from completeness | A star with only the two archive-bookkeeping fields present (no real coverage category) scores `evidence_completeness == 0.0` | `tests/test_evidence.py::test_archive_flag_populated_categories_excluded_from_completeness` (regression test) | Pass |
 | Accelerator-detection logic | Flags only (significant acceleration) AND (no archive-listed planet); does not flag either condition alone | `tests/test_conflicts.py` (4 cases) | Pass |
 | Ranking views stay separate | `combined_view` never produces a merged score column; a synthetic "high value, low evidence" star ranks #1 by value and worst by evidence simultaneously | `tests/test_ranking.py::test_combined_view_keeps_two_separate_rank_columns_not_merged` | Pass |
+| Target identity is row-order independent | Composite catalogue identity is deterministic, null-safe, and distinguishes shared-HIP components | `tests/test_data_adapter.py::test_target_identity_is_deterministic_and_null_safe`, `test_component_label_distinguishes_shared_catalogue_names` | Pass |
+| Source snapshot integrity | Cached reads recompute SHA-256 and fail closed on any mismatch | `tests/test_data_adapter.py::test_cache_checksum_verification_fails_closed`, `data/cache/manifest.json` | Pass |
+| Aggregate denominators | Coverage, missingness, distance strata, and BH family retain exact denominators | `tests/test_analysis.py` | Pass |
 
 ## Bugs found and fixed
 
@@ -50,6 +53,14 @@ regression test
 (`test_archive_flag_populated_categories_excluded_from_completeness`). See
 `docs/CLAIMS.md` "Superseded / corrected claims" and `CHANGELOG.md` for
 the full account.
+
+**Found in the v0.3 reproducibility audit, fixed 2026-10-04**: the
+"stable" target identifier was actually the source DataFrame row number,
+so a legal change in TAP row order would relabel every downstream row.
+Identifiers are now deterministic hashes of catalogue names and component
+labels, with collision detection and regression tests. The same audit
+corrected the FDR-family description from 164 target rows to the 160
+non-null HGCA tests and versioned both exact source snapshots.
 
 ## Explicitly not yet validated
 

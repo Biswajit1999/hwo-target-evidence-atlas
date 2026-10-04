@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A reproducible cross-match of 164 candidate Habitable Worlds Observatory stars against the HGCA.">
+  <title>HWO Target Evidence Atlas</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to analysis</a>
+  <header class="masthead">
+    <a class="wordmark" href="#top" aria-label="HWO Target Evidence Atlas home">HWO / evidence atlas</a>
+    <nav aria-label="Primary navigation">
+      <a href="#findings">Findings</a><a href="#method">Method</a><a href="#data">Data</a><a href="#limits">Limits</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="kicker">Catalogue cross-match · release 0.3 · 4 October 2026</div>
+      <h1>Which prospective HWO stars still lack essential catalogue evidence?</h1>
+      <p class="dek">A reproducible audit of 164 stars from the NASA Exoplanet Archive’s Direct Imaging ExEP Mission Star List, cross-matched to the Hipparcos–Gaia Catalog of Accelerations.</p>
+      <div class="hero-grid" aria-label="Headline results">
+        <article><strong>164</strong><span>candidate stars</span></article>
+        <article><strong>104</strong><span>complete across four evidence categories</span></article>
+        <article><strong>55</strong><span>missing only a WDS record</span></article>
+        <article><strong>28</strong><span>FDR-significant accelerators without a listed planet</span></article>
+      </div>
+      <p class="scope"><strong>Interpretation boundary.</strong> Catalogue presence is not measurement quality. No WDS record is not evidence that a star is single. An HGCA acceleration does not identify a companion’s mass or nature.</p>
+    </section>
+
+    <section class="section" id="findings">
+      <div class="section-head"><span>01</span><div><h2>Coverage is high—but uneven</h2><p>Stellar parameters and activity are nearly complete. Multiplicity evidence, defined narrowly as a Washington Double Star catalogue record, is the dominant gap.</p></div></div>
+      <figure>
+        <img src="results/figures/coverage_by_category.png" alt="Bar chart: stellar parameters 164 of 164, activity 163, WDS record 109, and HGCA entry 160.">
+        <figcaption>Figure 1. Per-category presence. The four categories are reported separately; they are not blended with scientific value into a target score.</figcaption>
+      </figure>
+
+      <div class="finding-grid">
+        <div class="finding"><span class="eyebrow">Exact pattern</span><h3>One gap explains most incomplete rows</h3><p>Of 60 targets missing at least one category, 55 lack only a WDS record. Four lack only an HGCA entry; one lacks only activity.</p></div>
+        <div class="finding"><span class="eyebrow">Distance check</span><h3>The nearby subset retains the gap</h3><p>WDS-record coverage is 39/51 (76.5%) within 10 pc and 94/144 (65.3%) within 20 pc. These cumulative cuts are descriptive, not population inference.</p></div>
+      </div>
+      <figure>
+        <img src="results/figures/coverage_structure.png" alt="Grouped bars showing evidence coverage within 10, 20, and 30 parsecs, alongside counts for four exact missingness patterns.">
+        <figcaption>Figure 2. Cumulative distance strata and mutually exclusive missingness patterns, generated directly from the 164-row matrix.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section dark" id="method">
+      <div class="section-head"><span>02</span><div><h2>Acceleration is evidence for follow-up—not classification</h2><p>For 160 targets with an HGCA entry, χ² is converted to a two-degree-of-freedom survival probability. Benjamini–Hochberg adjustment is performed over those 160 non-null tests.</p></div></div>
+      <figure>
+        <img src="results/figures/hgca_acceleration_evidence.png" alt="Ordered HGCA acceleration p-values; points are coloured by whether the archive lists a planet.">
+        <figcaption>Figure 3. Forty targets cross raw p&lt;0.01; 35 survive FDR control at q&lt;0.01. Of these, 31 raw and 28 FDR-significant targets have no archive-listed planet.</figcaption>
+      </figure>
+      <div class="callout"><strong>This is not a discovery claim.</strong> “No archive-listed planet” does not mean “no companion.” Acceleration may arise from a stellar, brown-dwarf, or planetary-mass companion and requires external characterization.</div>
+    </section>
+
+    <section class="section" id="data">
+      <div class="section-head"><span>03</span><div><h2>Inspect every result</h2><p>The exact source snapshots, checksums, per-target matrix, aggregate tables, and code are versioned together.</p></div></div>
+      <div class="data-grid">
+        <a href="results/evidence_matrix.csv"><strong>Evidence matrix</strong><span>164 per-target rows · CSV</span></a>
+        <a href="results/missingness_patterns.csv"><strong>Missingness patterns</strong><span>Exact joint patterns · CSV</span></a>
+        <a href="results/distance_strata.csv"><strong>Distance strata</strong><span>Cumulative cuts · CSV</span></a>
+        <a href="results/summary.json"><strong>Statistical summary</strong><span>Denominators and counts · JSON</span></a>
+        <a href="data/cache/manifest.json"><strong>Source manifest</strong><span>URLs, dates, SHA-256 · JSON</span></a>
+        <a href="https://github.com/Biswajit1999/hwo-target-evidence-atlas"><strong>Source code</strong><span>Methods, tests, provenance · GitHub</span></a>
+      </div>
+    </section>
+
+    <section class="section compact" id="limits">
+      <div class="section-head"><span>04</span><div><h2>Scope and limitations</h2></div></div>
+      <ul class="limits">
+        <li>The sample is exactly the 164-star Mamajek &amp; Stapelfeldt (2024) list—not every plausible HWO target.</li>
+        <li>WDS presence measures visual-binary catalogue coverage; it cannot rule out unresolved or spectroscopic companions.</li>
+        <li>Distance is shown as a transparent stratifier, not as a complete scientific-value model.</li>
+        <li>No official relationship with NASA, STScI, JPL, ExEP, CDS, or the HWO programme is implied.</li>
+      </ul>
+      <p class="citation">Primary sources: Mamajek &amp; Stapelfeldt (2024), <em>ApJS</em> 272, 32; Brandt (2021), <em>ApJS</em> 254, 42. Full provenance and claim-by-claim validation are included in the repository.</p>
+    </section>
+  </main>
+  <footer><span>HWO Target Evidence Atlas · Biswajit Jana</span><span>Reproducible research software · MIT</span></footer>
+</body>
+</html>

@@ -3,6 +3,25 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-10-04
+
+### Added
+
+- Versioned 2026-10-04 snapshots of the 164-row NASA Exoplanet Archive
+  target table and 156-row unique-HIP HGCA cross-match, with request URLs,
+  byte counts, and SHA-256 digests.
+- Generated category counts, exact missingness patterns, cumulative distance
+  strata, and a machine-readable statistical summary.
+- Three publication figures and a static scientific report.
+
+### Fixed
+
+- Replaced row-order-derived target IDs with deterministic composite catalogue
+  identities and added null-safety, component-disambiguation, and invariance tests.
+- Corrected multiple-testing language: Benjamini-Hochberg is applied to the
+  160 non-null HGCA p-values, not to all 164 target rows.
+- Pinned CI actions by commit and moved the tested Python matrix to 3.11/3.12.
+
 ## [0.2.0] - 2026-08-29
 
 An external review (Codex) of this repository found one critical bug and

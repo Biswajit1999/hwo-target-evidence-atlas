@@ -76,8 +76,9 @@ inflated by the two always-populated archive-bookkeeping fields.
 flags stars with p < 0.01 (HGCA acceleration chi-squared, 2 degrees of
 freedom, Brandt 2021) but `sy_planets_flag == "N"`, and separately reports
 the same comparison at Benjamini-Hochberg FDR-corrected significance
-(`hgca_significant_accel_fdr`) to account for testing 164 stars
-simultaneously. This is explicitly not framed as a catalog "conflict":
+(`hgca_significant_accel_fdr`) across the 160 non-null HGCA p-values. The
+four targets without an HGCA entry are not statistical tests and remain
+null rather than being assigned p=1. This is explicitly not framed as a catalog "conflict":
 `sy_planets_flag == "N"` means no archive-listed planet, not a confirmed
 single-star determination, so the two catalogs are not necessarily in
 disagreement -- the acceleration may come from a stellar, brown-dwarf, or

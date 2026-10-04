@@ -9,15 +9,15 @@ hwoevidence build --cache-dir data/cache --out results/
 python scripts/make_figures.py
 ```
 
-This regenerates `results/evidence_matrix.csv`,
-`results/hgca_accelerators_without_listed_planets.csv`, and
-`results/ranking.csv` from live queries against the NASA Exoplanet
-Archive and VizieR (see `docs/DATA_SOURCES.md`), and prints the
+This regenerates the per-target matrix, candidate list, ranking, aggregate
+coverage tables, exact missingness patterns, distance strata, and JSON
+summary from the versioned source snapshots (or from fresh NASA Exoplanet
+Archive and VizieR queries with `--force-refetch`; see `docs/DATA_SOURCES.md`), and prints the
 per-category completeness summary quoted in `README.md` and
 `CHANGELOG.md`; `scripts/make_figures.py` regenerates
-`results/figures/evidence_completeness.png` from those CSVs. Fetched data
-is cached with a SHA-256 checksum manifest in `data/cache/manifest.json`
-(git-ignored) so re-runs do not re-query the network unless
+three publication figures from those CSVs. Source data is cached with a
+SHA-256 checksum manifest in `data/cache/manifest.json`; cached reads fail
+closed on a checksum mismatch. Re-runs do not query the network unless
 `--force-refetch` is passed.
 
 ## Determinism

@@ -61,7 +61,7 @@
   in `src/hwoevidence/evidence.py`) is a documented, arbitrary choice, not
   a value derived from or validated against this specific target
   population's false-positive characteristics. Because this threshold is
-  applied independently across 164 stars, a Benjamini-Hochberg FDR
+  applied across the 160 targets with non-null HGCA p-values, a Benjamini-Hochberg FDR
   correction is also computed and reported (`hgca_accel_qvalue`,
   `hgca_significant_accel_fdr`): 40 stars are significant at raw p < 0.01,
   but only 35 survive FDR correction at the same nominal rate, and the

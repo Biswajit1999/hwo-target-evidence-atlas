@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: "Jana"
     given-names: "Biswajit"
-version: 0.2.0
-date-released: 2026-08-29
+version: 0.3.0
+date-released: 2026-10-04
 url: "https://github.com/Biswajit1999/hwo-target-evidence-atlas"
 license: MIT
 keywords:
