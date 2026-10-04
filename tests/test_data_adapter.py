@@ -9,7 +9,13 @@ import json
 import pandas as pd
 import pytest
 
-from hwoevidence.data import CachePaths, _extract_hip_number, _parse_hgca_votable_row
+from hwoevidence.data import (
+    CachePaths,
+    _extract_hip_number,
+    _parse_hgca_votable_row,
+    _stable_target_id,
+    _verify_cached_file,
+)
 
 # Two real rows from DI_STARS_EXEP (NASA Exoplanet Archive TAP JSON), fields
 # trimmed to what this project uses.
@@ -88,6 +94,32 @@ def test_di_stars_excerpt_has_expected_real_values():
     row = df[df["hd_name"] == "HD 75732 A"].iloc[0]  # 55 Cancri A
     assert row["sy_planets_flag"] == "Y"  # 55 Cnc is a well-known multi-planet system
     assert row["hip_number"] == 43587
+
+
+def test_target_identity_is_deterministic_and_null_safe():
+    first = pd.Series(_DI_STARS_EXCERPT[0] | {"hostname": None, "tic_id": float("nan")})
+    second = first.copy()
+    assert _stable_target_id(first) == _stable_target_id(second)
+    assert _stable_target_id(first).startswith("hwo-")
+
+
+def test_component_label_distinguishes_shared_catalogue_names():
+    base = {"hostname": None, "hip_name": "HIP 72659", "hd_name": "HD 131156", "tic_id": None}
+    assert _stable_target_id(pd.Series(base | {"hip_compname": "A"})) != _stable_target_id(
+        pd.Series(base | {"hip_compname": "B"})
+    )
+
+
+def test_cache_checksum_verification_fails_closed(tmp_path):
+    cache = tmp_path / "source.json"
+    cache.write_bytes(b"original")
+    (tmp_path / "manifest.json").write_text(json.dumps({
+        "source.json": {"sha256": "0682c5f2076f099c34cfdd15a9e063849ed437a49677e6fcc5b4198c76575be5"}
+    }))
+    paths = CachePaths(cache_dir=tmp_path)
+    _verify_cached_file("source.json", b"original", paths)
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        _verify_cached_file("source.json", b"modified", paths)
 
 
 def test_parse_hgca_votable_row_real_fragment():

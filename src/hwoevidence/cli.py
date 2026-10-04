@@ -5,6 +5,7 @@ from pathlib import Path
 
 import click
 
+from .analysis import write_analysis_products
 from .conflicts import find_hgca_accelerators_without_archive_listed_planets
 from .data import CachePaths, load_di_stars_exep, load_hgca_for_hip
 from .evidence import COVERAGE_CATEGORIES, build_evidence_matrix
@@ -57,6 +58,12 @@ def build_cmd(cache_dir: str, out_dir: str, force_refetch: bool) -> None:
     click.echo(f"Wrote {out/'ranking.csv'} ({len(ranking)} rows)")
     assert len(ranking) == len(stars), (
         f"ranking row count ({len(ranking)}) != star count ({len(stars)})"
+    )
+
+    payload = write_analysis_products(evidence, out)
+    click.echo(
+        f"Wrote aggregate analyses (BH family: {payload['n_hgca_tests']} "
+        "non-null HGCA cross-matches)"
     )
 
     coverage_cols = [c.key for c in COVERAGE_CATEGORIES]

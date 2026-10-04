@@ -1,0 +1,14 @@
+{
+  "di_stars_exep.json": {
+    "accessed_utc": "2026-10-04T14:53:40Z",
+    "n_bytes": 410618,
+    "sha256": "034f2b7a6fc7b42829d43442932e216040d2cd425d7d0808758b09d5afb94466",
+    "url": "https://exoplanetarchive.ipac.caltech.edu/TAP/sync?query=select+%2A+from+DI_STARS_EXEP&format=json"
+  },
+  "hgca_f80df150ff9663e4.json": {
+    "accessed_utc": "2026-10-04T14:54:54Z",
+    "n_bytes": 43589,
+    "sha256": "99c6e34d51a7b876f7a25a771190dce6b12ad69a24ca732c5cc9cd70db6bf515",
+    "url": "https://vizier.cds.unistra.fr/viz-bin/votable (per-HIP queries, see cached file)"
+  }
+}

@@ -62,12 +62,26 @@ def _record_manifest(name: str, url: str, data: bytes, paths: CachePaths) -> Non
     paths.manifest.write_text(json.dumps(manifest, indent=2, sort_keys=True))
 
 
+def _verify_cached_file(name: str, data: bytes, paths: CachePaths) -> None:
+    """Fail closed when a cached source snapshot does not match its manifest."""
+    if not paths.manifest.exists():
+        raise ValueError(f"cached source {name} has no checksum manifest")
+    manifest = json.loads(paths.manifest.read_text())
+    if name not in manifest:
+        raise ValueError(f"cached source {name} has no checksum entry")
+    observed = hashlib.sha256(data).hexdigest()
+    expected = manifest[name].get("sha256")
+    if observed != expected:
+        raise ValueError(f"cached source {name} checksum mismatch: {observed} != {expected}")
+
+
 def load_di_stars_exep(paths: CachePaths, force: bool = False) -> pd.DataFrame:
     """Fetch (or read cached) the 164-row Direct Imaging ExEP Mission Star
     List from the NASA Exoplanet Archive TAP service."""
     cache_file = paths.cache_dir / "di_stars_exep.json"
     if cache_file.exists() and not force:
         raw = cache_file.read_bytes()
+        _verify_cached_file(cache_file.name, raw, paths)
     else:
         url = NEA_TAP_SYNC + "?" + urllib.parse.urlencode(
             {"query": DI_STARS_EXEP_QUERY, "format": "json"}
@@ -81,14 +95,27 @@ def load_di_stars_exep(paths: CachePaths, force: bool = False) -> pd.DataFrame:
     records = json.loads(raw)
     df = pd.DataFrame(records)
     df["hip_number"] = df["hip_name"].apply(_extract_hip_number)
-    # hip_name (and hip_number) is not a unique row key: several DI_STARS_EXEP
-    # targets are components of a wide binary sharing one Hipparcos number and
-    # one hip_name string (e.g. HIP 72659 A/B). target_id is a stable,
-    # guaranteed-unique per-row identifier assigned once at load time and
-    # threaded through every downstream table; every later join uses this,
-    # never hip_name, to avoid a many-to-many merge fan-out (see ranking.py).
-    df["target_id"] = df.index.astype(int)
+    # Row order is not an identity: TAP services may legally reorder rows.
+    # Build a deterministic composite identifier from catalogue names and the
+    # component label, then fail closed if upstream identity fields no longer
+    # distinguish all targets.
+    df["target_id"] = df.apply(_stable_target_id, axis=1)
+    if not df["target_id"].is_unique:
+        duplicates = df.loc[df["target_id"].duplicated(False), "target_id"].tolist()
+        raise ValueError(f"DI_STARS_EXEP target identity collision: {duplicates}")
     return df
+
+
+def _stable_target_id(row: pd.Series) -> str:
+    fields = ("hostname", "hip_name", "hip_compname", "hd_name", "tic_id")
+    values = []
+    for field in fields:
+        value = row.get(field)
+        values.append("" if pd.isna(value) else str(value).strip().casefold())
+    identity = "|".join(values)
+    if not identity.replace("|", ""):
+        raise ValueError("DI_STARS_EXEP row has no usable catalogue identity")
+    return "hwo-" + hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]
 
 
 def _extract_hip_number(hip_name: object) -> int | None:
@@ -111,7 +138,9 @@ def load_hgca_for_hip(hip_numbers: list[int], paths: CachePaths, force: bool = F
     ).hexdigest()[:16] + ".json"
     cache_file = paths.cache_dir / cache_key
     if cache_file.exists() and not force:
-        rows = json.loads(cache_file.read_text())
+        raw = cache_file.read_bytes()
+        _verify_cached_file(cache_file.name, raw, paths)
+        rows = json.loads(raw)
         return pd.DataFrame(rows)
 
     rows = []
