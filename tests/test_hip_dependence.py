@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -80,3 +82,20 @@ def test_invalid_alpha_and_distance_rejected():
         hip_fdr_audit(_fixture(), alpha=0)
     with pytest.raises(ValueError):
         wds_distance_contrast(_fixture(), boundary_pc=-1)
+
+
+def test_pinned_hwo_matrix_unique_hip_regression():
+    """Pin source-level denominators; a changed archive needs explicit review."""
+    root = Path(__file__).resolve().parents[1]
+    frame = pd.read_csv(root / "results" / "evidence_matrix.csv")
+    result = hip_fdr_audit(frame)
+    assert result["n_target_rows"] == 164
+    assert result["n_unique_hip"] == 159
+    assert result["n_hgca_target_tests"] == 160
+    assert result["n_unique_hgca_tests"] == 156
+    assert result["n_original_fdr_target_flags"] == 35
+    assert result["n_hip_fdr_target_flags"] == 34
+    assert result["changed_hip_numbers"] == [57443]
+    near = wds_distance_contrast(frame)
+    assert (near["group_a_present"], near["group_a_total"]) == (34, 46)
+    assert (near["group_b_present"], near["group_b_total"]) == (70, 113)
