@@ -62,8 +62,8 @@ def hip_fdr_audit(frame: pd.DataFrame, alpha: float = 0.01) -> dict:
     new = target_q.le(alpha).fillna(False)
     changed = frame.loc[old != new, ["target_id", "hip_number", "hd_name"]]
     return {
-        "n_target_rows": int(len(frame)),
-        "n_unique_hip": int(len(hips)),
+        "n_target_rows": len(frame),
+        "n_unique_hip": len(hips),
         "n_hgca_target_tests": int(frame["hgca_accel_pvalue"].notna().sum()),
         "n_unique_hgca_tests": int(tested.sum()),
         "n_original_fdr_target_flags": int(old.sum()),
