@@ -1,0 +1,425 @@
+{
+  "schema": 1,
+  "project": "HWO Target Evidence Cross-Match",
+  "tables": [
+    {
+      "path": "results/coverage_summary.csv",
+      "label": "Coverage summary",
+      "role": "Tables and numerical results",
+      "rows": 4,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "category",
+          "blank": 0,
+          "text": 4,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "description",
+          "blank": 0,
+          "text": 4,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "n_present",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 109.0,
+          "maximum": 164.0
+        },
+        {
+          "name": "n_total",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 164.0,
+          "maximum": 164.0
+        },
+        {
+          "name": "fraction_present",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 0.6646341463414634,
+          "maximum": 1.0
+        }
+      ]
+    },
+    {
+      "path": "results/distance_strata.csv",
+      "label": "Distance strata",
+      "role": "Tables and numerical results",
+      "rows": 4,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "distance_stratum",
+          "blank": 0,
+          "text": 4,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "max_distance_pc",
+          "blank": 1,
+          "text": 0,
+          "finite": 3,
+          "nonfinite": 0,
+          "minimum": 10.0,
+          "maximum": 30.0
+        },
+        {
+          "name": "n_targets",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 51.0,
+          "maximum": 164.0
+        },
+        {
+          "name": "stellar_parameters_fraction",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 1.0,
+          "maximum": 1.0
+        },
+        {
+          "name": "activity_fraction",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 0.9930555555555556,
+          "maximum": 1.0
+        },
+        {
+          "name": "multiplicity_fraction",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 0.6527777777777778,
+          "maximum": 0.7647058823529411
+        },
+        {
+          "name": "astrometric_acceleration_fraction",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 0.9215686274509803,
+          "maximum": 0.975609756097561
+        },
+        {
+          "name": "mean_category_coverage",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 0.904513888888889,
+          "maximum": 0.9215686274509803
+        }
+      ]
+    },
+    {
+      "path": "results/evidence_matrix.csv",
+      "label": "Evidence matrix",
+      "role": "Tables and numerical results",
+      "rows": 164,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "target_id",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "hip_name",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "hd_name",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "hip_number",
+          "blank": 0,
+          "text": 0,
+          "finite": 164,
+          "nonfinite": 0,
+          "minimum": 544.0,
+          "maximum": 116771.0
+        },
+        {
+          "name": "sy_dist",
+          "blank": 0,
+          "text": 0,
+          "finite": 164,
+          "nonfinite": 0,
+          "minimum": 1.3319,
+          "maximum": 23.2606
+        },
+        {
+          "name": "sy_planets_flag",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "sy_disks_flag",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "stellar_parameters",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "activity",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "multiplicity",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "archive_planet_flag_populated",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "archive_disk_flag_populated",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "astrometric_acceleration",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "evidence_completeness",
+          "blank": 0,
+          "text": 0,
+          "finite": 164,
+          "nonfinite": 0,
+          "minimum": 0.75,
+          "maximum": 1.0
+        },
+        {
+          "name": "hgca_chi2",
+          "blank": 4,
+          "text": 0,
+          "finite": 160,
+          "nonfinite": 0,
+          "minimum": 0.008782,
+          "maximum": 16990.0
+        },
+        {
+          "name": "hgca_accel_pvalue",
+          "blank": 4,
+          "text": 0,
+          "finite": 160,
+          "nonfinite": 0,
+          "minimum": 0.0,
+          "maximum": 0.9956186263455847
+        },
+        {
+          "name": "hgca_significant_accel",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "hgca_accel_qvalue",
+          "blank": 4,
+          "text": 0,
+          "finite": 160,
+          "nonfinite": 0,
+          "minimum": 0.0,
+          "maximum": 0.9956186263455848
+        },
+        {
+          "name": "hgca_significant_accel_fdr",
+          "blank": 0,
+          "text": 164,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "results/hgca_accelerators_without_listed_planets.csv",
+      "label": "Hgca accelerators without listed planets",
+      "role": "Tables and numerical results",
+      "rows": 31,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "target_id",
+          "blank": 0,
+          "text": 31,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "hip_name",
+          "blank": 0,
+          "text": 31,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "hd_name",
+          "blank": 0,
+          "text": 31,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "sy_planets_flag",
+          "blank": 0,
+          "text": 31,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "hgca_chi2",
+          "blank": 0,
+          "text": 0,
+          "finite": 31,
+          "nonfinite": 0,
+          "minimum": 9.318,
+          "maximum": 16990.0
+        },
+        {
+          "name": "hgca_accel_pvalue",
+          "blank": 0,
+          "text": 0,
+          "finite": 31,
+          "nonfinite": 0,
+          "minimum": 0.0,
+          "maximum": 0.009475933598921375
+        },
+        {
+          "name": "hgca_accel_qvalue",
+          "blank": 0,
+          "text": 0,
+          "finite": 31,
+          "nonfinite": 0,
+          "minimum": 0.0,
+          "maximum": 0.0379037343956855
+        },
+        {
+          "name": "hgca_significant_accel_fdr",
+          "blank": 0,
+          "text": 31,
+          "finite": 0,
+          "nonfinite": 0
+        }
+      ]
+    },
+    {
+      "path": "results/missingness_patterns.csv",
+      "label": "Missingness patterns",
+      "role": "Tables and numerical results",
+      "rows": 4,
+      "width_mismatches": 0,
+      "columns": [
+        {
+          "name": "stellar_parameters",
+          "blank": 0,
+          "text": 4,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "activity",
+          "blank": 0,
+          "text": 4,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "multiplicity",
+          "blank": 0,
+          "text": 4,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "astrometric_acceleration",
+          "blank": 0,
+          "text": 4,
+          "finite": 0,
+          "nonfinite": 0
+        },
+        {
+          "name": "n_targets",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 1.0,
+          "maximum": 104.0
+        },
+        {
+          "name": "fraction_targets",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 0.006097560975609756,
+          "maximum": 0.6341463414634146
+        },
+        {
+          "name": "n_categories_present",
+          "blank": 0,
+          "text": 0,
+          "finite": 4,
+          "nonfinite": 0,
+          "minimum": 3.0,
+          "maximum": 4.0
+        }
+      ]
+    }
+  ],
+  "excluded": []
+}
