@@ -24,6 +24,13 @@ matters.
 
 ## Research evidence and downloads
 
+
+- [Download the machine-readable table profiles](evidence/table-profiles.json) for 5 archived tables. Open `table-evidence.html` from the checkout for the coverage chart.
+- Start with [Coverage summary](results/coverage_summary.csv), [Summary](results/summary.json), [Distance strata](results/distance_strata.csv).
+- [View Coverage by category](results/figures/coverage_by_category.png).
+
+To rebuild the table profiles after rebuilding the evidence inventory, run `python scripts/profile_evidence_tables.py` followed by `python scripts/render_table_profiles.py`.
+
 [Open the evidence browser](https://biswajit1999.github.io/hwo-target-evidence-atlas/evidence.html) for 17 selected files, including [`coverage_summary.csv`](results/coverage_summary.csv). Each file has a download link and SHA-256 digest.
 
 Rebuild the inventory and browser with `python scripts/evidence_catalog.py` and `python scripts/render_evidence_page.py`.
