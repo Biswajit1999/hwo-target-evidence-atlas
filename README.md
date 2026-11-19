@@ -22,6 +22,12 @@ would silently inflate every star's score by a fixed, uninformative amount
 single combined score -- see `docs/METHODS.md` for why that distinction
 matters.
 
+## Research evidence and downloads
+
+[Open the evidence browser](https://biswajit1999.github.io/hwo-target-evidence-atlas/evidence.html) for 17 selected files, including [`coverage_summary.csv`](results/coverage_summary.csv). Each file has a download link and SHA-256 digest.
+
+Rebuild the inventory and browser with `python scripts/evidence_catalog.py` and `python scripts/render_evidence_page.py`.
+
 ## Quickstart
 
 ```bash
