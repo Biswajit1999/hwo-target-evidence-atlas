@@ -128,7 +128,7 @@ def render(manifest):
 <a class="skip" href="#evidence-content">Skip to file list</a>
 <main>
 <header>
-<nav aria-label="Evidence links"><a href="{repository}#readme">Methods and references</a><a href="{MANIFEST}" download>Download the file inventory</a></nav>
+<nav aria-label="Evidence links"><a href="{repository}#readme">Methods and references</a><a href="{MANIFEST}" download>Download the file inventory</a><a href="table-evidence.html">Inspect table coverage</a></nav>
 <h1>{title}</h1>
 <p>Browse {len(files)} versioned evidence files. Table previews simply display stored rows. Consult the project report for the source, processing steps, and inference assumptions.</p>
 </header>

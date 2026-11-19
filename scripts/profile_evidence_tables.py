@@ -20,7 +20,7 @@ def profile_table(item, committed):
     delimiter = '\t' if PurePosixPath(path).suffix.lower() == '.tsv' else ','
     rows = csv.reader(source, delimiter=delimiter, strict=True)
     headers = next(rows, [])
-    columns = [dict(name=name, blank=0, text=0, finite=0, nonfinite=0) for name in headers]
+    columns = [{'name': name, 'blank': 0, 'text': 0, 'finite': 0, 'nonfinite': 0} for name in headers]
     count = 0
     width_mismatches = 0
     for row in rows:

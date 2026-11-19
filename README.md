@@ -25,7 +25,7 @@ matters.
 ## Research evidence and downloads
 
 
-- [Download the machine-readable table profiles](evidence/table-profiles.json) for 5 archived tables. Open `table-evidence.html` from the checkout for the coverage chart.
+- [Inspect table coverage and value ranges](https://biswajit1999.github.io/hwo-target-evidence-atlas/table-evidence.html) for 5 archived tables. [Download the JSON profiles](evidence/table-profiles.json).
 - Start with [Coverage summary](results/coverage_summary.csv), [Summary](results/summary.json), [Distance strata](results/distance_strata.csv).
 - [View Coverage by category](results/figures/coverage_by_category.png).
 
