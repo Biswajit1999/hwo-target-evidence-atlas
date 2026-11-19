@@ -1,0 +1,91 @@
+{
+  "project": "HWO Target Evidence Cross-Match",
+  "repository": "https://github.com/Biswajit1999/hwo-target-evidence-atlas",
+  "files": [
+    {
+      "label": "Data source notes",
+      "path": "data/README.md",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Project claims",
+      "path": "docs/CLAIMS.md",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Project data sources",
+      "path": "docs/DATA_SOURCES.md",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Project methods",
+      "path": "docs/METHODS.md",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Di stars exep",
+      "path": "data/cache/di_stars_exep.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Hgca f80df150ff9663e4",
+      "path": "data/cache/hgca_f80df150ff9663e4.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Manifest",
+      "path": "data/cache/manifest.json",
+      "role": "Data and provenance"
+    },
+    {
+      "label": "Coverage summary",
+      "path": "results/coverage_summary.csv",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Summary",
+      "path": "results/summary.json",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Distance strata",
+      "path": "results/distance_strata.csv",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Evidence matrix",
+      "path": "results/evidence_matrix.csv",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Hgca accelerators without listed planets",
+      "path": "results/hgca_accelerators_without_listed_planets.csv",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Missingness patterns",
+      "path": "results/missingness_patterns.csv",
+      "role": "Tables and numerical results"
+    },
+    {
+      "label": "Coverage by category",
+      "path": "results/figures/coverage_by_category.png",
+      "role": "Figures"
+    },
+    {
+      "label": "Coverage structure",
+      "path": "results/figures/coverage_structure.png",
+      "role": "Figures"
+    },
+    {
+      "label": "Evidence completeness",
+      "path": "results/figures/evidence_completeness.png",
+      "role": "Figures"
+    },
+    {
+      "label": "Hgca acceleration evidence",
+      "path": "results/figures/hgca_acceleration_evidence.png",
+      "role": "Figures"
+    }
+  ]
+}

@@ -1,0 +1,430 @@
+{
+  "schema": 1,
+  "project": "HWO Target Evidence Cross-Match",
+  "repository": "https://github.com/Biswajit1999/hwo-target-evidence-atlas",
+  "files": [
+    {
+      "label": "Data source notes",
+      "path": "data/README.md",
+      "role": "Data and provenance",
+      "bytes": 229,
+      "sha256": "39d15d579d8a4955092c58c7e8d68d0d3563ebbd5b51e72bceced465296617ea",
+      "hash_basis": "LF-normalised text",
+      "format": "MD"
+    },
+    {
+      "label": "Project claims",
+      "path": "docs/CLAIMS.md",
+      "role": "Data and provenance",
+      "bytes": 4040,
+      "sha256": "4334b7b94390c8870b6b02a334f03920889e8eddbcdbd2f4cf27984c4a866766",
+      "hash_basis": "LF-normalised text",
+      "format": "MD"
+    },
+    {
+      "label": "Project data sources",
+      "path": "docs/DATA_SOURCES.md",
+      "role": "Data and provenance",
+      "bytes": 4608,
+      "sha256": "7100927f5a1cb0c83c0d65c853de370bfa46405f407516024a13e36fcf709c3d",
+      "hash_basis": "LF-normalised text",
+      "format": "MD"
+    },
+    {
+      "label": "Project methods",
+      "path": "docs/METHODS.md",
+      "role": "Data and provenance",
+      "bytes": 5111,
+      "sha256": "ff60a6d03ab533f0507cddcc06b951f209b3cbe1bf1d2b11e1d046494988d4e9",
+      "hash_basis": "LF-normalised text",
+      "format": "MD"
+    },
+    {
+      "label": "Di stars exep",
+      "path": "data/cache/di_stars_exep.json",
+      "role": "Data and provenance",
+      "bytes": 410618,
+      "sha256": "034f2b7a6fc7b42829d43442932e216040d2cd425d7d0808758b09d5afb94466",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "records": 164,
+      "fields": [
+        "tic_id",
+        "hip_name",
+        "hip_compname",
+        "hd_name",
+        "hr_name",
+        "gj_name",
+        "constellation"
+      ]
+    },
+    {
+      "label": "Hgca f80df150ff9663e4",
+      "path": "data/cache/hgca_f80df150ff9663e4.json",
+      "role": "Data and provenance",
+      "bytes": 41560,
+      "sha256": "3730718c8bf0d7c775170aadebb891b98f46596f1f153c73f7b8894b54b34667",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "records": 156,
+      "fields": [
+        "HIP",
+        "Gaia",
+        "RA_ICRS",
+        "DE_ICRS",
+        "plx",
+        "e_plx",
+        "pmRA"
+      ]
+    },
+    {
+      "label": "Manifest",
+      "path": "data/cache/manifest.json",
+      "role": "Data and provenance",
+      "bytes": 575,
+      "sha256": "ba4cd8ce3fb5c1b0d21b8a473f54897793a7b4fb126b3c6180c1fe3ec54f0d39",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "di_stars_exep.json",
+        "hgca_f80df150ff9663e4.json"
+      ],
+      "arrays": {}
+    },
+    {
+      "label": "Coverage summary",
+      "path": "results/coverage_summary.csv",
+      "role": "Tables and numerical results",
+      "bytes": 507,
+      "sha256": "cd4bbc855288839fb9a140cfdf0930e9ad16c8bba87012137b298ee17fb5ebee",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 4,
+      "columns": 5,
+      "headers": [
+        "category",
+        "description",
+        "n_present",
+        "n_total",
+        "fraction_present"
+      ],
+      "preview": [
+        [
+          "stellar_parameters",
+          "Teff, mass, radius, and logg all measured (NASA Exoplanet Archive)",
+          "164",
+          "164",
+          "1.0"
+        ],
+        [
+          "activity",
+          "Chromospheric activity index log(R'HK) measured",
+          "163",
+          "164",
+          "0.9939024390243902"
+        ],
+        [
+          "multiplicity",
+          "Washington Double Star catalog cross-match exists (presence of a record, not a Y/N single-star determination)",
+          "109",
+          "164",
+          "0.6646341463414634"
+        ],
+        [
+          "astrometric_acceleration",
+          "Star has a Hipparcos-Gaia Catalog of Accelerations (HGCA) entry",
+          "160",
+          "164",
+          "0.975609756097561"
+        ]
+      ]
+    },
+    {
+      "label": "Summary",
+      "path": "results/summary.json",
+      "role": "Tables and numerical results",
+      "bytes": 312,
+      "sha256": "67e0e99bfe7691d281ea8eb296a941ef749bf1f4c1b286c3c131d2e7e067b64e",
+      "hash_basis": "LF-normalised text",
+      "format": "JSON",
+      "keys": [
+        "n_targets",
+        "n_hgca_tests",
+        "fdr_family",
+        "alpha",
+        "n_raw_significant",
+        "n_fdr_significant",
+        "n_raw_significant_without_archive_planet"
+      ],
+      "arrays": {}
+    },
+    {
+      "label": "Distance strata",
+      "path": "results/distance_strata.csv",
+      "role": "Tables and numerical results",
+      "bytes": 529,
+      "sha256": "b7dd1f69c2452f193780707471558302c0333f2abebd05dcdecc4ee06d24a786",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 4,
+      "columns": 8,
+      "headers": [
+        "distance_stratum",
+        "max_distance_pc",
+        "n_targets",
+        "stellar_parameters_fraction",
+        "activity_fraction",
+        "multiplicity_fraction",
+        "astrometric_acceleration_fraction"
+      ],
+      "preview": [
+        [
+          "<=10 pc",
+          "10.0",
+          "51",
+          "1.0",
+          "1.0",
+          "0.7647058823529411",
+          "0.9215686274509803"
+        ],
+        [
+          "<=20 pc",
+          "20.0",
+          "144",
+          "1.0",
+          "0.9930555555555556",
+          "0.6527777777777778",
+          "0.9722222222222222"
+        ],
+        [
+          "<=30 pc",
+          "30.0",
+          "164",
+          "1.0",
+          "0.9939024390243902",
+          "0.6646341463414634",
+          "0.975609756097561"
+        ],
+        [
+          "all",
+          "",
+          "164",
+          "1.0",
+          "0.9939024390243902",
+          "0.6646341463414634",
+          "0.975609756097561"
+        ]
+      ]
+    },
+    {
+      "label": "Evidence matrix",
+      "path": "results/evidence_matrix.csv",
+      "role": "Tables and numerical results",
+      "bytes": 24585,
+      "sha256": "4b6edc88cefa993beebb3d5d4d2be7ee1a2914f968dd181ac5d102a22cdde634",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 164,
+      "columns": 19,
+      "headers": [
+        "target_id",
+        "hip_name",
+        "hd_name",
+        "hip_number",
+        "sy_dist",
+        "sy_planets_flag",
+        "sy_disks_flag"
+      ],
+      "preview": [
+        [
+          "hwo-d8db80e6c268807f",
+          "HIP 41926",
+          "HD 72673",
+          "41926",
+          "12.1643",
+          "N",
+          "N"
+        ],
+        [
+          "hwo-c03957d64b1f36cb",
+          "HIP 42438",
+          "HD 72905",
+          "42438",
+          "14.4388",
+          "N",
+          "Y"
+        ],
+        [
+          "hwo-f9b0865dbe4ced35",
+          "HIP 42808",
+          "HD 74576",
+          "42808",
+          "11.1917",
+          "N",
+          "N"
+        ],
+        [
+          "hwo-db19849dc3237a1e",
+          "HIP 43587",
+          "HD 75732 A",
+          "43587",
+          "12.5868",
+          "Y",
+          "N"
+        ]
+      ]
+    },
+    {
+      "label": "Hgca accelerators without listed planets",
+      "path": "results/hgca_accelerators_without_listed_planets.csv",
+      "role": "Tables and numerical results",
+      "bytes": 2923,
+      "sha256": "a0e5bf882fa5ad9120cee211516319b95ebf238af64948ed23698fb57d686219",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 31,
+      "columns": 8,
+      "headers": [
+        "target_id",
+        "hip_name",
+        "hd_name",
+        "sy_planets_flag",
+        "hgca_chi2",
+        "hgca_accel_pvalue",
+        "hgca_accel_qvalue"
+      ],
+      "preview": [
+        [
+          "hwo-35fdd019731e3ea2",
+          "HIP 72659",
+          "HD 131156 A",
+          "N",
+          "11500.0",
+          "0.0",
+          "0.0"
+        ],
+        [
+          "hwo-a94c754468553e12",
+          "HIP 77052",
+          "HD 140538 A",
+          "N",
+          "4965.0",
+          "0.0",
+          "0.0"
+        ],
+        [
+          "hwo-9e40bdd178f8293f",
+          "HIP 72659",
+          "HD 131156 B",
+          "N",
+          "11500.0",
+          "0.0",
+          "0.0"
+        ],
+        [
+          "hwo-7b2e6dbe6d799ac7",
+          "HIP 12843",
+          "HD 17206",
+          "N",
+          "4366.0",
+          "0.0",
+          "0.0"
+        ]
+      ]
+    },
+    {
+      "label": "Missingness patterns",
+      "path": "results/missingness_patterns.csv",
+      "role": "Tables and numerical results",
+      "bytes": 296,
+      "sha256": "f5e0f704c66f9c038789b1a479c0bc89d1b2ed7bbb0e90724aab0caac1346e63",
+      "hash_basis": "LF-normalised text",
+      "format": "CSV",
+      "rows": 4,
+      "columns": 7,
+      "headers": [
+        "stellar_parameters",
+        "activity",
+        "multiplicity",
+        "astrometric_acceleration",
+        "n_targets",
+        "fraction_targets",
+        "n_categories_present"
+      ],
+      "preview": [
+        [
+          "True",
+          "True",
+          "True",
+          "True",
+          "104",
+          "0.6341463414634146",
+          "4"
+        ],
+        [
+          "True",
+          "True",
+          "False",
+          "True",
+          "55",
+          "0.3353658536585366",
+          "3"
+        ],
+        [
+          "True",
+          "True",
+          "True",
+          "False",
+          "4",
+          "0.024390243902439025",
+          "3"
+        ],
+        [
+          "True",
+          "False",
+          "True",
+          "True",
+          "1",
+          "0.006097560975609756",
+          "3"
+        ]
+      ]
+    },
+    {
+      "label": "Coverage by category",
+      "path": "results/figures/coverage_by_category.png",
+      "role": "Figures",
+      "bytes": 99741,
+      "sha256": "c392df8f5e4fb43c7db6b8983e2a6c41d0b51e17a407bbd36917fec9e5f67759",
+      "hash_basis": "exact bytes",
+      "format": "PNG"
+    },
+    {
+      "label": "Coverage structure",
+      "path": "results/figures/coverage_structure.png",
+      "role": "Figures",
+      "bytes": 103980,
+      "sha256": "ca83de804110b28917ba58df2ec6c0a8c091fb6978d9449e537d193ff8c5c335",
+      "hash_basis": "exact bytes",
+      "format": "PNG"
+    },
+    {
+      "label": "Evidence completeness",
+      "path": "results/figures/evidence_completeness.png",
+      "role": "Figures",
+      "bytes": 72622,
+      "sha256": "51ed0e825835c3762871d936de3dff9aea36a9422d86241027be204d70b77a30",
+      "hash_basis": "exact bytes",
+      "format": "PNG"
+    },
+    {
+      "label": "Hgca acceleration evidence",
+      "path": "results/figures/hgca_acceleration_evidence.png",
+      "role": "Figures",
+      "bytes": 130032,
+      "sha256": "50217cf7c6cd05c6ac1a5cc1f10303bbcc44a4618ca7c39331c65d2d88037e10",
+      "hash_basis": "exact bytes",
+      "format": "PNG"
+    }
+  ]
+}
